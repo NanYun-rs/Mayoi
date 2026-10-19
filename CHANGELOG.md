@@ -3,6 +3,13 @@
 The update window shows the section of the version it offers. Every release
 needs a `## <version>` section here, or its build fails.
 
+## Unreleased
+
+- The status bar has a Git sync button beside the branch, with incoming
+  and outgoing commit counts. It pulls with fast-forward only before
+  pushing that branch to its upstream, or publishes a branch that has
+  no upstream yet.
+
 ## 0.11.4
 
 - Mayoi checks for a new version every hour, not once a day, and shows it

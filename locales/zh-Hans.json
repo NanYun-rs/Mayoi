@@ -360,6 +360,8 @@
   "folderEmptyDetail": "添加文件或文件夹以开始。",
   "forwardPortEllipsis": "转发端口…",
   "gitNeedsAuth": "Git 需要登录：请在终端中运行一次该命令。",
+  "gitSync": "同步更改",
+  "gitSyncTip": "从 {upstream} 拉取并推送",
   "goToLineLabel": "转到行",
   "goToScope": "转到 {label}",
   "groupChanges": "更改",

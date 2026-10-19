@@ -3653,6 +3653,26 @@ func (msgs Messages) GitNeedsAuth() string {
 	return Catalog.Format(msgs.locale, "gitNeedsAuth", nil)
 }
 
+// GitSync says "Synchronize Changes"
+// in the language the app shows.
+func GitSync() string { return In(i18n.Locale()).GitSync() }
+
+// GitSync says "Synchronize Changes"
+// in the language of msgs.
+func (msgs Messages) GitSync() string {
+	return Catalog.Format(msgs.locale, "gitSync", nil)
+}
+
+// GitSyncTip says "Pull from and push to {upstream}"
+// in the language the app shows.
+func GitSyncTip(upstream string) string { return In(i18n.Locale()).GitSyncTip(upstream) }
+
+// GitSyncTip says "Pull from and push to {upstream}"
+// in the language of msgs.
+func (msgs Messages) GitSyncTip(upstream string) string {
+	return Catalog.Format(msgs.locale, "gitSyncTip", map[string]any{"upstream": upstream})
+}
+
 // GoToLineLabel says "Go to Line"
 // in the language the app shows.
 func GoToLineLabel() string { return In(i18n.Locale()).GoToLineLabel() }

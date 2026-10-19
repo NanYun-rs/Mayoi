@@ -360,6 +360,8 @@
   "folderEmptyDetail": "ファイルかフォルダーを追加して始めましょう。",
   "forwardPortEllipsis": "ポートを転送…",
   "gitNeedsAuth": "Git のサインインが必要です。ターミナルでコマンドを一度実行してください。",
+  "gitSync": "変更を同期",
+  "gitSyncTip": "{upstream} からプルしてプッシュ",
   "goToLineLabel": "行へ移動",
   "goToScope": "{label} へ移動",
   "groupChanges": "変更",

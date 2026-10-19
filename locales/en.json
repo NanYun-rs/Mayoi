@@ -400,6 +400,8 @@
   "folderEmptyDetail": "Add a file or a folder to start.",
   "forwardPortEllipsis": "Forward a Port…",
   "gitNeedsAuth": "Git needs to sign in: run the command in the terminal once.",
+  "gitSync": "Synchronize Changes",
+  "gitSyncTip": "Pull from and push to {upstream}",
   "goToLineLabel": "Go to Line",
   "goToScope": "Go to {label}",
   "groupChanges": "Changes",
