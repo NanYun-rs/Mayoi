@@ -42,8 +42,10 @@ func TestGitSyncStatusBar(t *testing.T) {
 		hs.shotRect(name, image.Rect(0, 716, 1200, 760), 1)
 	}
 	a.openFile(hs.path("main.go"), false)
+	// Force the counts to give way even with a platform's narrower font.
+	run("branch", "-m", strings.Repeat("W", 64))
 	tt.SetSize(300, 300)
-	hs.settle()
+	hs.settleGit()
 	if b, ok := tt.Find(locales.GitSync()); !ok || b.X < 0 || b.X+b.W > 300 || b.Y+b.H > 300 {
 		t.Fatalf("narrow sync button is clipped: %v %v", b, ok)
 	}
@@ -54,7 +56,9 @@ func TestGitSyncStatusBar(t *testing.T) {
 		t.Fatalf("narrow caret position is clipped: %v %v", b, ok)
 	}
 	hs.shot("git-sync-narrow")
+	run("branch", "-m", "feature_T12436745")
 	tt.SetSize(1200, 760)
+	hs.settleGit()
 	// Holding an existing Git operation makes repeated clicks deterministic.
 	release := make(chan struct{})
 	released := false
