@@ -5,6 +5,133 @@ needs a `## <version>` section here, or its build fails.
 
 ## Unreleased
 
+- Discarding changes block by block in a diff now always goes through the
+  file's document, also when the file was not open: the discard is one
+  step of undo, the tab shows the file as changed until it is saved, and
+  a diff that is behind the file on disk is read again rather than
+  writing over what changed.
+- Every block of a diff of the changes not staged has a round arrow, by its
+  lines in either layout, that puts the lines of the version it is compared
+  against in place of the block's own: the lines of the Index going into the
+  work tree revert the block, in the file's document, as one step of undo,
+  and the arrow says which versions it reads and writes. Blocks beside it
+  keep their changes, the view stays near where it was as the diff is read
+  again, and ⌘Z and ⇧⌘Z undo and redo from the diff's keyboard. The changes
+  staged and a commit's take no arrows: the index goes on by staging, and
+  the versions Git keeps are read only — a file that a diff adds or deletes
+  whole says so under its lines, with what the buttons of its header do.
+- Control-clicking the round arrow of a change of a diff of the changes
+  not staged appends instead: the lines of the version it is compared
+  against go after the change, as one step of undo, and the arrow says so
+  while Control is held. **Append the Lines of the Change** in the Git menu
+  and the command palette does the same to the change the diff has chosen.
+- The working tree side of a diff can be edited right in the diff: press
+  **I** on a change, or the **Edit** button, and the side takes typing,
+  selection, copy, cut, paste and the usual editing keys, with the caret
+  painted where it is. **Esc** goes back to reading. The edits go through
+  the file's document, so the editor tab shows the same text, the save
+  state is the document's (`Cmd+S` saves from the diff too, autosave
+  included), and undo and redo are the document's one history. The diff
+  reads the sides again as you type, keeping the scroll and the caret's
+  line; its block actions refuse to run while it is catching up. The
+  staged, HEAD and commit sides stay read-only, and a line of any side
+  copies with `Cmd+C` while the diff reads as a pager.
+- Diff tabs now expose **Previous File** and **Next File** controls alongside
+  the existing change navigation, with matching commands in the Git menu, and
+  a direct **Side by Side** toggle for the split viewer.
+- Change navigation in diffs no longer wraps round the ends without a word:
+  at the last, or first, change of a file it says so in the status bar, and one
+  more press goes to the next file with changes, or the last of the previous.
+  At the ends of the diff it says so, and stays. **diffCrossFiles** in
+  settings.json has it cross at once, or never leave the file. The status bar
+  says which change of how many the diff is on, and file navigation says where
+  it is at the first and last file instead of jumping nowhere.
+- Opening a file from a diff, with `e` or double-click, lands on the line of
+  the change you are on, also from the change's `@@` header, after the layout
+  changed, after its file folded and opened again, and after the sides were
+  read again.
+- Whole-file changes in a diff have explicit actions: a deleted tracked file
+  offers **Restore File** from the index, while an untracked file offers
+  **Remove File…** and follows the existing trash or remote-delete policy.
+  These actions keep file existence distinct from an empty text buffer and
+  refresh any open document after the operation.
+- Diffs can filter comparison whitespace from the **Whitespace** menu:
+  exact, line-end, all whitespace, or whitespace plus blank lines. The
+  filter changes only what the diff shows and counts; source text and block
+  actions continue to use the original lines.
+- Diffs offer a **Highlight** menu that shows what changed within a line by
+  word (as before), by character, or no more than the line, and a **Context**
+  menu that keeps none to ten unchanged lines around each change and folds
+  the rest away. Both are kept in the settings for the next diffs. What a
+  diff highlights is only so: the changes its block actions take are still
+  its hunks of lines, as the header of each run says.
+- A side-by-side diff can let its sides scroll together, or each on its own:
+  **Synchronized Scrolling** in the Layout menu. A wheel over a side scrolls
+  that side alone; together again, the sides line up from the line the right
+  side was at.
+- The rows of a side-by-side diff's sides align by default, a line the one
+  side lacks holding a space on the other; **Line Alignment** in the Layout
+  menu, and `diffAlignedRows` in settings.json, turn that off: each side's
+  lines close up where the other has lines it lacks, and the sides read in
+  streams of their own, scrolling on their own.
+- A diff keeps its place: folding or unfolding a gap or a file, wrapping its
+  lines and a wider or narrower window keep the line at the top of the view
+  the same line of the file, and a layout chosen by hand is no longer the
+  width's to change. A file that folded under the view unfolds where the
+  view was.
+- **Compare Two Files…** in the **Git** menu opens a diff of any two local
+  files, whether or not they are in the current repository. The tab names
+  both paths and each changed block offers **Accept Left** or **Accept Right**;
+  the chosen file is edited through its document history for undo, redo and
+  save, without staging either file.
+- Conflicted files open in a **three-way merge view**: the two sides read
+  only beside an editable result that starts as the base, with the conflicts
+  marked in all three panes. Each conflict takes **Accept Left/Right** or
+  **Ignore Left/Right**, and **Resolve using Left/Right** decides every
+  conflict of the file at once. The result edits, undoes and redoes like any
+  document — undo brings the sides a conflict took back with it — and its
+  unresolved count, Save and **Mark Resolved** (which stages the file) close
+  the loop with the merge, rebase, cherry-pick or revert it belongs to. A
+  resolved file goes back in conflict with **Restore Conflict…**, and a
+  merge left and reopened goes on where its saved result stood.
+- A merge that stopped for conflicts now works file by file: the merge
+  view lists **the files in conflict** — resolved ones among them, with
+  their resolution to take back — and says how many of them stand. The
+  changes of a side that no conflict of the file holds are applied into
+  the result as it opens (**Apply Automatically** in the Apply menu turns
+  that off), or from the menu for both sides or a side's own, as one step
+  of undo; the conflicts themselves stand for the hand to decide.
+  **Apply Changes** saves the result, stages the file and opens the next
+  file in conflict; **Save and Close** saves it and goes back to the
+  list. The list shows of itself when a command stops for conflicts, and
+  the merge goes on once every file of it stands resolved. The arrow keys
+  and Enter choose and open its files, and a file whose conflicts still
+  have the base's lines asks before it is marked resolved.
+- A side-by-side diff has a gutter between its sides, as JetBrains' has:
+  each change is a band from its lines on the left to its lines on the
+  right, curving where the sides stand apart, and its arrows stand in the
+  band by the first line of the side they read, larger and easier to hit;
+  in the one column, an arrow stands by its change's first line too.
+  Pointing at an arrow lights the lines it takes, and the lines an arrow
+  or an append writes glow a moment as the diff shows them again.
+- The words tinted as changed within a line are those that changed against
+  the line it is paired with: lines that moved, as after an added import,
+  were compared with the line at their own number on the other side.
+- With **Line Alignment** off, a split diff scrolled down shows both sides
+  again — the left one went out of view — and the right side follows the
+  left as it scrolls, its changes going by at the pace of the left's lines.
+- Going to the next or previous change, or file, glides there when it is
+  near, and the buttons of a run of changes fade in and out with the
+  pointer.
+- The three-way merge view shows the whole text of each side — its side
+  panes cut every line after a few characters — and its panes scroll
+  together, a side's changes going by at the pace of the result's lines.
+  Gutters between the panes join each change of a side to the result's
+  lines, with **»** and **×** by each conflict to accept or ignore that
+  side's lines, and **Apply This Change** by a change of a side's that no
+  conflict holds. Its bars have outlined buttons with icons, a line under
+  them fills as the conflicts are resolved, and going to a conflict glides
+  there.
 - The status bar has a Git sync button beside the branch, with incoming
   and outgoing commit counts. It pulls with fast-forward only before
   pushing that branch to its upstream, or publishes a branch that has
