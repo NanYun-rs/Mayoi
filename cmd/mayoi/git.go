@@ -519,7 +519,23 @@ func (a *gitContext) gitSync() {
 		a.push()
 		return
 	}
-	a.gitDo(locales.SyncSyncing(), func(r *git.Repo) error { return r.Sync() }, nil)
+	upstream, ahead, pulled := a.git.status.Upstream, a.git.status.Ahead, 0
+	a.gitDo(locales.BusySyncing(), func(r *git.Repo) error {
+		before := r.Head()
+		if err := r.Sync(); err != nil {
+			return err
+		}
+		if before != "" {
+			pulled = r.Count(before, "HEAD")
+		}
+		return nil
+	}, func() {
+		if pulled == 0 && ahead == 0 {
+			a.app.tell(note{message: locales.AlreadyUpToDate()})
+		} else {
+			a.app.tell(note{message: locales.SyncedWith(upstream)})
+		}
+	})
 }
 
 // switchBranch checks out a branch, or makes it first when create is set,

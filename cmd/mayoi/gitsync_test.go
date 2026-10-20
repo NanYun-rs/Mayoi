@@ -67,9 +67,9 @@ func TestGitSyncStatusBar(t *testing.T) {
 			close(release)
 		}
 	})
-	ctx.gitDo("Syncing…", func(*gitpkg.Repo) error { <-release; return nil }, nil)
+	ctx.gitDo(locales.BusySyncing(), func(*gitpkg.Repo) error { <-release; return nil }, nil)
 	hs.settle()
-	if !tt.HasText("Syncing…") {
+	if !tt.HasText(locales.BusySyncing()) {
 		t.Fatalf("busy feedback missing: %q", tt.Texts())
 	}
 	for range 2 {
@@ -77,7 +77,7 @@ func TestGitSyncStatusBar(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if a.git.pending != 1 || a.git.busy != "Syncing…" {
+	if a.git.pending != 1 || a.git.busy != locales.BusySyncing() {
 		t.Fatalf("busy button started another command: pending=%d busy=%q", a.git.pending, a.git.busy)
 	}
 	close(release)
@@ -89,6 +89,9 @@ func TestGitSyncStatusBar(t *testing.T) {
 	hs.settleGit()
 	if a.git.status.Ahead != 0 || a.git.status.Behind != 0 || strings.TrimSpace(gitIn(t, remote, "rev-parse", "main")) != strings.TrimSpace(run("rev-parse", "HEAD")) {
 		t.Fatalf("sync did not push local commits: %+v; errors: %q", a.git.status, a.errors)
+	}
+	if !tt.HasText(locales.SyncedWith("origin/main")) {
+		t.Fatalf("sync result not shown: %q", tt.Texts())
 	}
 	// Even 0/0 is actionable: the remote may have commits not fetched yet.
 	peer := filepath.Join(t.TempDir(), "peer")
